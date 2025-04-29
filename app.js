@@ -276,10 +276,6 @@ async function generatePDFReport() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Add font configuration for Romanian characters
-    doc.addFont('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.ttf', 'Roboto', 'normal');
-    doc.setFont('Roboto');
-    
     // Add title
     doc.setFontSize(20);
     doc.text(translations[currentLanguage].reportTitle, 20, 20);

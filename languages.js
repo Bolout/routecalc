@@ -10,7 +10,7 @@ const translations = {
         distanceLabel: "Distanta totala:",
         durationLabel: "Durata estimata:",
         fuelLabel: "Consum total de combustibil:",
-        downloadButton: "Descarcă Raport PDF",
+        downloadButton: "Descarca Raport PDF",
         km: "km",
         minutes: "minute",
         liters: "litri",
