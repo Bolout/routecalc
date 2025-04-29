@@ -2,8 +2,11 @@
     "name": "Fuel Consumption Calculator",
     "short_name": "FuelCalc",
     "description": "Calculate fuel consumption for multiple routes",
-    "start_url": "/",
+    "start_url": "./",
+    "scope": "./",
     "display": "standalone",
     "background_color": "#f5f6fa",
-    "theme_color": "#2c3e50"
+    "theme_color": "#2c3e50",
+    "orientation": "any",
+    "prefer_related_applications": false
 } 
