@@ -7,13 +7,18 @@ const translations = {
         endPlaceholder: "Introduceți destinația",
         efficiencyLabel: "Consum de combustibil (L/100km):",
         calculateButton: "Calculează Ruta",
-        resultsTitle: "Informații despre Rută",
         distanceLabel: "Distanță totală:",
+        durationLabel: "Durată estimată:",
         fuelLabel: "Consum total de combustibil:",
         downloadButton: "Descarcă Raport PDF",
         km: "km",
+        minutes: "minute",
         liters: "litri",
+        addRoute: "Adaugă Rută",
+        generateReport: "Generează Raport PDF",
+        routeTitle: "Ruta",
         reportTitle: "Raport de Consum de Combustibil",
+        totalTitle: "Total",
         reportGenerated: "Raport generat la:"
     },
     en: {
@@ -22,15 +27,20 @@ const translations = {
         startPlaceholder: "Enter starting location",
         endLabel: "Destination:",
         endPlaceholder: "Enter destination",
-        efficiencyLabel: "Fuel Consumption (L/100km):",
+        efficiencyLabel: "Fuel Efficiency (L/100km):",
         calculateButton: "Calculate Route",
-        resultsTitle: "Route Information",
         distanceLabel: "Total Distance:",
+        durationLabel: "Estimated Duration:",
         fuelLabel: "Total Fuel Consumption:",
         downloadButton: "Download PDF Report",
         km: "km",
+        minutes: "minutes",
         liters: "liters",
+        addRoute: "Add Route",
+        generateReport: "Generate PDF Report",
+        routeTitle: "Route",
         reportTitle: "Fuel Consumption Report",
-        reportGenerated: "Report generated on:"
+        totalTitle: "Total",
+        reportGenerated: "Report generated at:"
     }
 }; 

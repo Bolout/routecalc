@@ -175,7 +175,17 @@ async function calculateRoute(start, end) {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        return data;
+        
+        // Extract route information
+        const route = data.features[0];
+        const distance = route.properties.segments[0].distance / 1000; // Convert to km
+        const duration = route.properties.segments[0].duration / 60; // Convert to minutes
+        
+        return {
+            coordinates: route.geometry.coordinates,
+            distance: distance,
+            duration: duration
+        };
     } catch (error) {
         console.error('Routing error:', error);
         throw error;
@@ -244,6 +254,7 @@ async function generatePDFReport() {
         const end = document.getElementById(`end-${routeId}`).value;
         const efficiency = document.getElementById(`fuel-efficiency-${routeId}`).value;
         const distance = route.querySelector('.distance').textContent;
+        const duration = route.querySelector('.duration').textContent;
         const fuel = route.querySelector('.fuel').textContent;
         
         // Add route number
@@ -258,6 +269,8 @@ async function generatePDFReport() {
         doc.text(`${translations[currentLanguage].endLabel} ${end}`, 20, yPosition);
         yPosition += 10;
         doc.text(`${translations[currentLanguage].distanceLabel} ${distance} ${translations[currentLanguage].km}`, 20, yPosition);
+        yPosition += 10;
+        doc.text(`${translations[currentLanguage].durationLabel} ${duration} ${translations[currentLanguage].minutes}`, 20, yPosition);
         yPosition += 10;
         doc.text(`${translations[currentLanguage].efficiencyLabel} ${efficiency}`, 20, yPosition);
         yPosition += 10;
@@ -274,6 +287,8 @@ async function generatePDFReport() {
     // Add total consumption
     const totalDistance = Array.from(routes).reduce((sum, route) => 
         sum + parseFloat(route.querySelector('.distance').textContent), 0);
+    const totalDuration = Array.from(routes).reduce((sum, route) => 
+        sum + parseFloat(route.querySelector('.duration').textContent), 0);
     const totalFuel = Array.from(routes).reduce((sum, route) => 
         sum + parseFloat(route.querySelector('.fuel').textContent), 0);
     
@@ -282,6 +297,8 @@ async function generatePDFReport() {
     yPosition += 10;
     doc.setFontSize(12);
     doc.text(`${translations[currentLanguage].distanceLabel} ${totalDistance.toFixed(2)} ${translations[currentLanguage].km}`, 20, yPosition);
+    yPosition += 10;
+    doc.text(`${translations[currentLanguage].durationLabel} ${Math.round(totalDuration)} ${translations[currentLanguage].minutes}`, 20, yPosition);
     yPosition += 10;
     doc.text(`${translations[currentLanguage].fuelLabel} ${totalFuel.toFixed(2)} ${translations[currentLanguage].liters}`, 20, yPosition);
     
@@ -325,19 +342,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Calculate route
                 const route = await calculateRoute(start, end);
-                const distance = route.features[0].properties.segments[0].distance / 1000; // Convert to km
+                const distance = route.distance;
+                const duration = route.duration;
 
                 // Calculate fuel consumption
                 const fuelConsumption = calculateFuelConsumption(distance, consumptionPer100km);
 
                 // Update results
                 const results = document.getElementById(`results-${routeId}`);
-                results.querySelector('.distance').textContent = distance.toFixed(2);
-                results.querySelector('.fuel').textContent = fuelConsumption;
+                results.innerHTML = `
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <i class="fas fa-route"></i>
+                            <span data-i18n="distanceLabel">Distanță totală:</span>
+                            <span class="distance">${distance.toFixed(2)}</span>
+                            <span data-i18n="km">km</span>
+                        </div>
+                        <div class="result-item">
+                            <i class="fas fa-clock"></i>
+                            <span data-i18n="durationLabel">Durată estimată:</span>
+                            <span class="duration">${Math.round(duration)}</span>
+                            <span data-i18n="minutes">minute</span>
+                        </div>
+                        <div class="result-item">
+                            <i class="fas fa-gas-pump"></i>
+                            <span data-i18n="fuelLabel">Consum total de combustibil:</span>
+                            <span class="fuel">${fuelConsumption}</span>
+                            <span data-i18n="liters">litri</span>
+                        </div>
+                    </div>
+                `;
                 results.classList.remove('hidden');
                 
                 // Store coordinates for map
-                results.dataset.coordinates = JSON.stringify(route.features[0].geometry.coordinates);
+                results.dataset.coordinates = JSON.stringify(route.coordinates);
 
                 // Update map
                 updateMap();
