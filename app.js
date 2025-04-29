@@ -149,11 +149,17 @@ function checkGenerateReportButton() {
 // Function to geocode address using Nominatim
 async function geocodeAddress(address) {
     try {
+        console.log('Geocoding address:', address);
         const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+        
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            console.error('Geocoding response not OK:', response.status, response.statusText);
+            throw new Error(`Geocoding failed: ${response.status} ${response.statusText}`);
         }
+        
         const data = await response.json();
+        console.log('Geocoding response:', data);
+        
         if (data && data.length > 0) {
             return {
                 lat: parseFloat(data[0].lat),
@@ -162,7 +168,7 @@ async function geocodeAddress(address) {
         }
         throw new Error('Location not found');
     } catch (error) {
-        console.error('Geocoding error:', error);
+        console.error('Geocoding error details:', error);
         throw error;
     }
 }
@@ -170,11 +176,41 @@ async function geocodeAddress(address) {
 // Function to calculate route using OpenRouteService
 async function calculateRoute(start, end) {
     try {
-        const response = await fetch(`https://api.openrouteservice.org/v2/directions/driving-car?api_key=YOUR_API_KEY&start=${start.lng},${start.lat}&end=${end.lng},${end.lat}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        // TODO: Replace 'YOUR_API_KEY' with your actual OpenRouteService API key
+        // Get your API key from: https://openrouteservice.org/
+        const apiKey = '5b3ce3597851110001cf6248f1d7b59069114c73bf5b0a798923b1eb';
+        
+        if (!apiKey || apiKey === 'YOUR_API_KEY') {
+            throw new Error(currentLanguage === 'ro' 
+                ? 'Vă rugăm să configurați cheia API OpenRouteService' 
+                : 'Please configure your OpenRouteService API key');
         }
+
+        console.log('Calculating route with points:', { start, end });
+
+        const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${start.lng},${start.lat}&end=${end.lng},${end.lat}`;
+        console.log('API Request URL:', url);
+
+        const response = await fetch(url);
+        console.log('API Response status:', response.status);
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('API Error response:', errorData);
+            throw new Error(errorData.error?.message || 
+                (currentLanguage === 'ro' 
+                    ? 'Eroare la calcularea rutei. Vă rugăm să verificați adresele introduse.' 
+                    : 'Error calculating route. Please check the addresses entered.'));
+        }
+
         const data = await response.json();
+        console.log('API Response data:', data);
+        
+        if (!data.features || data.features.length === 0) {
+            throw new Error(currentLanguage === 'ro' 
+                ? 'Nu s-a putut găsi o rută între punctele specificate' 
+                : 'Could not find a route between the specified points');
+        }
         
         // Extract route information
         const route = data.features[0];
@@ -187,7 +223,7 @@ async function calculateRoute(start, end) {
             duration: duration
         };
     } catch (error) {
-        console.error('Routing error:', error);
+        console.error('Route calculation error details:', error);
         throw error;
     }
 }
@@ -326,8 +362,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const endAddress = document.getElementById(`end-${routeId}`).value;
             const consumptionPer100km = parseFloat(document.getElementById(`fuel-efficiency-${routeId}`).value);
 
+            console.log('Starting route calculation:', { startAddress, endAddress, consumptionPer100km });
+
             if (!startAddress || !endAddress) {
-                alert(currentLanguage === 'ro' ? 'Vă rugăm să introduceți atât punctul de plecare cât și destinația' : 'Please enter both starting point and destination');
+                alert(currentLanguage === 'ro' 
+                    ? 'Vă rugăm să introduceți atât punctul de plecare cât și destinația' 
+                    : 'Please enter both starting point and destination');
                 return;
             }
 
@@ -337,16 +377,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.target.textContent = currentLanguage === 'ro' ? 'Se calculează...' : 'Calculating...';
 
                 // Geocode addresses
+                console.log('Geocoding start address...');
                 const start = await geocodeAddress(startAddress);
+                console.log('Start coordinates:', start);
+                
+                console.log('Geocoding end address...');
                 const end = await geocodeAddress(endAddress);
+                console.log('End coordinates:', end);
 
                 // Calculate route
+                console.log('Calculating route...');
                 const route = await calculateRoute(start, end);
+                console.log('Route calculated:', route);
+
                 const distance = route.distance;
                 const duration = route.duration;
 
                 // Calculate fuel consumption
                 const fuelConsumption = calculateFuelConsumption(distance, consumptionPer100km);
+                console.log('Fuel consumption calculated:', fuelConsumption);
 
                 // Update results
                 const results = document.getElementById(`results-${routeId}`);
@@ -384,9 +433,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 checkGenerateReportButton();
 
             } catch (error) {
+                console.error('Full error details:', error);
                 alert(currentLanguage === 'ro' 
-                    ? 'Eroare la calcularea rutei: ' + error.message 
-                    : 'Error calculating route: ' + error.message);
+                    ? 'Eroare: ' + error.message 
+                    : 'Error: ' + error.message);
             } finally {
                 // Reset button state
                 e.target.disabled = false;
