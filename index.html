@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Consumption Calculator</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="language-switcher">
+        <button id="lang-ro" class="lang-btn active">RO</button>
+        <button id="lang-en" class="lang-btn">EN</button>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <h1 data-i18n="title">Calculator de Consum de Combustibil</h1>
+            
+            <div class="routes-container">
+                <div class="route-section active" id="route-1">
+                    <div class="route-header">
+                        <h3 data-i18n="routeTitle">Ruta 1</h3>
+                        <button class="remove-route-btn" onclick="removeRoute(1)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label for="start-1" data-i18n="startLabel">Punct de plecare:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" id="start-1" data-i18n-placeholder="startPlaceholder" placeholder="Introduceți locația de plecare">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="end-1" data-i18n="endLabel">Destinație:</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-flag"></i>
+                                <input type="text" id="end-1" data-i18n-placeholder="endPlaceholder" placeholder="Introduceți destinația">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="fuel-efficiency-1" data-i18n="efficiencyLabel">Consum de combustibil (L/100km):</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-gas-pump"></i>
+                                <input type="number" id="fuel-efficiency-1" value="8" min="1" max="30" step="0.1">
+                            </div>
+                        </div>
+                        <button class="calculate-route-btn primary-btn" data-route="1" data-i18n="calculateButton">Calculează Ruta</button>
+                    </div>
+                    <div class="route-results hidden" id="results-1">
+                        <div class="results-grid">
+                            <div class="result-item">
+                                <i class="fas fa-route"></i>
+                                <span data-i18n="distanceLabel">Distanță totală:</span>
+                                <span class="distance">0</span>
+                                <span data-i18n="km">km</span>
+                            </div>
+                            <div class="result-item">
+                                <i class="fas fa-gas-pump"></i>
+                                <span data-i18n="fuelLabel">Consum total de combustibil:</span>
+                                <span class="fuel">0</span>
+                                <span data-i18n="liters">litri</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons-container">
+                <button id="add-route" class="secondary-btn">
+                    <i class="fas fa-plus"></i>
+                    <span data-i18n="addRoute">Adaugă Rută</span>
+                </button>
+                <button id="generate-report" class="primary-btn" disabled>
+                    <i class="fas fa-file-pdf"></i>
+                    <span data-i18n="generateReport">Generează Raport PDF</span>
+                </button>
+            </div>
+            
+            <div id="map" class="map-container"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="languages.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
