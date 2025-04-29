@@ -2,24 +2,24 @@ const translations = {
     ro: {
         title: "Calculator de Consum de Combustibil",
         startLabel: "Punct de plecare:",
-        startPlaceholder: "Introduceți locația de plecare",
-        endLabel: "Destinație:",
-        endPlaceholder: "Introduceți destinația",
+        startPlaceholder: "Introduceti locatia de plecare",
+        endLabel: "Destinatie:",
+        endPlaceholder: "Introduceti destinatia",
         efficiencyLabel: "Consum de combustibil (L/100km):",
-        calculateButton: "Calculează Ruta",
-        distanceLabel: "Distanță totală:",
-        durationLabel: "Durată estimată:",
+        calculateButton: "Calculeaza Ruta",
+        distanceLabel: "Distanta totala:",
+        durationLabel: "Durata estimata:",
         fuelLabel: "Consum total de combustibil:",
         downloadButton: "Descarcă Raport PDF",
         km: "km",
         minutes: "minute",
         liters: "litri",
-        addRoute: "Adaugă Rută",
-        generateReport: "Generează Raport PDF",
+        addRoute: "Adauga Ruta",
+        generateReport: "Genereaza Raport PDF",
         routeTitle: "Ruta",
         reportTitle: "Raport de Consum de Combustibil",
         totalTitle: "Total",
-        reportGenerated: "Raport generat la:"
+        reportGenerated: "Raport generat la"
     },
     en: {
         title: "Fuel Consumption Calculator",
@@ -41,6 +41,6 @@ const translations = {
         routeTitle: "Route",
         reportTitle: "Fuel Consumption Report",
         totalTitle: "Total",
-        reportGenerated: "Report generated at:"
+        reportGenerated: "Report generated at"
     }
 }; 
